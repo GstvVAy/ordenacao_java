@@ -1,44 +1,50 @@
-import java.util.ArrayList;
+
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 public class Sort{
-    
-
-    public static class Bubble{
-        public static void bubbleSort(int[] vetoresArray){
-            
+    public static class Bubble {
+        public static void bubbleSort(int[] vetoresArray) {
             long inicio = System.nanoTime();
             long fim;
-    
-            int e = vetoresArray.length;
+
+            int e = calculateArrayLength(vetoresArray);
+
             int temp = 0;
-            for(int i=0; i < e; i++){
-                for(int j=1; j < (e-1); j++){
-                    if (vetoresArray[j-1] > vetoresArray[j]){
-                        temp = vetoresArray[j-1];
-                        vetoresArray[j-1] = vetoresArray[j];
+            for (int i = 0; i < e; i++) {
+                for (int j = 1; j < (e - 1); j++) {
+                    if (vetoresArray[j - 1] > vetoresArray[j]) {
+                        temp = vetoresArray[j - 1];
+                        vetoresArray[j - 1] = vetoresArray[j];
                         vetoresArray[j] = temp;
                     }
                 }
-            fim = System.nanoTime();
+                fim = System.nanoTime();
             }
             fim = System.nanoTime();
-            System.out.println("Lista ordenada por BubbleSort: " +  Arrays.toString(vetoresArray));
-            fim = System.nanoTime();
+            System.out.println("Lista ordenada por BubbleSort: " + Arrays.toString(vetoresArray));
             System.out.println("Tempo: " + (fim - inicio) + " nanossegundos");
         }
-    
+
+
+        private static int calculateArrayLength(int[] arr) {
+            int count = 0;
+            for (int i : arr) {
+                count++;
+            }
+            return count;
+        }
+
     }
     public static class Selection {
         public static void selectionSort(int[] vetoresArray) {
             long inicio = System.nanoTime();
             long fim;
 
-            for (int i = 0; i < vetoresArray.length; i++) {
+
+            int e = calculateArrayLength(vetoresArray);
+
+            for (int i = 0; i < e; i++) {
                 int menorE = i;
-                for (int j = i + 1; j < vetoresArray.length; j++)
+                for (int j = i + 1; j < e; j++)
                     if (vetoresArray[j] < vetoresArray[menorE])
                         menorE = j;
 
@@ -51,6 +57,15 @@ public class Sort{
             System.out.println("Lista ordenada por SelectionSort: " + Arrays.toString(vetoresArray));
             System.out.println("Tempo: " + (fim - inicio) + " nanossegundos");
         }
+
+
+        private static int calculateArrayLength(int[] arr) {
+            int count = 0;
+            for (int i : arr) {
+                count++;
+            }
+            return count;
+        }
     }
 
     public static class Merge {
@@ -58,16 +73,16 @@ public class Sort{
             long inicio = System.nanoTime();
             long fim;
 
-            if (vetoresArray.length <= 1) {
+            if (getArrayLength(vetoresArray) <= 1) {
                 return;
             }
 
-            int mid = vetoresArray.length / 2;
+            int mid = getArrayLength(vetoresArray) / 2;
             int[] left = new int[mid];
-            int[] right = new int[vetoresArray.length - mid];
+            int[] right = new int[getArrayLength(vetoresArray) - mid];
 
-            System.arraycopy(vetoresArray, 0, left, 0, mid);
-            System.arraycopy(vetoresArray, mid, right, 0, vetoresArray.length - mid);
+            copyArray(vetoresArray, 0, left, 0, mid);
+            copyArray(vetoresArray, mid, right, 0, getArrayLength(vetoresArray) - mid);
 
             mergeSort(left);
             mergeSort(right);
@@ -82,7 +97,7 @@ public class Sort{
         private static void merge(int[] vetoresArray, int[] left, int[] right) {
             int i = 0, j = 0, k = 0;
 
-            while (i < left.length && j < right.length) {
+            while (i < getArrayLength(left) && j < getArrayLength(right)) {
                 if (left[i] <= right[j]) {
                     vetoresArray[k++] = left[i++];
                 } else {
@@ -90,29 +105,47 @@ public class Sort{
                 }
             }
 
-            while (i < left.length) {
+            while (i < getArrayLength(left)) {
                 vetoresArray[k++] = left[i++];
             }
 
-            while (j < right.length) {
+            while (j < getArrayLength(right)) {
                 vetoresArray[k++] = right[j++];
             }
         }
+
+        private static int getArrayLength(int[] arr) {
+            int count = 0;
+            for (int i : arr) {
+                count++;
+            }
+            return count;
+        }
+
+
+        private static void copyArray(int[] src, int srcPos, int[] dest, int destPos, int length) {
+            for (int i = 0; i < length; i++) {
+                dest[destPos + i] = src[srcPos + i];
+            }
+        }
     }
+
 
     public static class Quick {
         public static void quickSort(int[] vetoresArray) {
             long inicio = System.nanoTime();
             long fim;
 
-            if (vetoresArray.length <= 1) {
+            int e = calculateArrayLength(vetoresArray);
+
+            if (e <= 1) {
                 return;
             }
 
-            int pivot = vetoresArray[vetoresArray.length - 1];
+            int pivot = vetoresArray[e - 1];
             int i = 0;
 
-            for (int j = 0; j < vetoresArray.length - 1; j++) {
+            for (int j = 0; j < e - 1; j++) {
                 if (vetoresArray[j] <= pivot) {
                     int temp = vetoresArray[i];
                     vetoresArray[i] = vetoresArray[j];
@@ -122,26 +155,37 @@ public class Sort{
             }
 
             int temp = vetoresArray[i];
-            vetoresArray[i] = vetoresArray[vetoresArray.length - 1];
-            vetoresArray[vetoresArray.length - 1] = temp;
+            vetoresArray[i] = vetoresArray[e - 1];
+            vetoresArray[e - 1] = temp;
 
             quickSort(Arrays.copyOfRange(vetoresArray, 0, i));
-            quickSort(Arrays.copyOfRange(vetoresArray, i + 1, vetoresArray.length));
+            quickSort(Arrays.copyOfRange(vetoresArray, i + 1, e));
 
             fim = System.nanoTime();
             System.out.println("Lista ordenada por QuickSort: " + Arrays.toString(vetoresArray));
             System.out.println("Tempo: " + (fim - inicio) + " nanossegundos");
         }
+
+        private static int calculateArrayLength(int[] arr) {
+            int count = 0;
+            for (int i : arr) {
+                count++;
+            }
+            return count;
+        }
     }
+
 
     public static class Heap {
         public static void heapSort(int[] vetoresArray) {
             long inicio = System.nanoTime();
             long fim;
 
-            buildHeap(vetoresArray);
+            int e = calculateArrayLength(vetoresArray);
 
-            for (int i = vetoresArray.length - 1; i >= 0; i--) {
+            buildHeap(vetoresArray, e);
+
+            for (int i = e - 1; i >= 0; i--) {
                 int temp = vetoresArray[0];
                 vetoresArray[0] = vetoresArray[i];
                 vetoresArray[i] = temp;
@@ -154,9 +198,9 @@ public class Sort{
             System.out.println("Tempo: " + (fim - inicio) + " nanossegundos");
         }
 
-        private static void buildHeap(int[] vetoresArray) {
-            for (int i = vetoresArray.length / 2 - 1; i >= 0; i--) {
-                heapify(vetoresArray, i, vetoresArray.length);
+        private static void buildHeap(int[] vetoresArray, int e) {
+            for (int i = e / 2 - 1; i >= 0; i--) {
+                heapify(vetoresArray, i, e);
             }
         }
 
@@ -181,8 +225,14 @@ public class Sort{
                 heapify(vetoresArray, largest, n);
             }
         }
+
+
+        private static int calculateArrayLength(int[] arr) {
+            int count = 0;
+            for (int i : arr) {
+                count++;
+            }
+            return count;
+        }
     }
-
 }
-
-
